@@ -19,8 +19,7 @@ app.use(express.static(path.resolve(__dirname, '../dist')));
 // Routes
 app.get('/', (request, response) => {
   const initialState = {
-    currentMessage: '',
-    messages: []
+    messages: [],
   };
   const store = createStore((state=initialState) => state);
   const appContent = ReactDOMServer.renderToString(
