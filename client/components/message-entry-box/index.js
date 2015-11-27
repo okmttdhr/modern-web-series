@@ -1,27 +1,52 @@
-import React, {Component} from 'react';
+import React from 'react';
 
-class MessageEntryBox extends Component {
+class MessageEntryBox extends React.Component {
+  static propTypes = {
+    onSubmit: React.PropTypes.func.isRequired,
+  }
+
+  constructor() {
+    super();
+    this.state = {
+      message: {
+        value: '',
+        valid: true,
+      },
+    };
+  }
+
+  changeMessage(e) {
+    const message = {
+      ...this.state.message,
+      value: e.target.value,
+    };
+    this.setState({message});
+  }
+
+  postMessage(e) {
+    const enterKey = 13;
+    if (e.which === enterKey) {
+      console.log('hey');
+      e.preventDefault();
+      this.props.onSubmit(this.state.message.value);
+      const message = {
+        ...this.state.message,
+        value: '',
+      };
+      this.setState({message});
+    }
+  }
+
   render() {
     return (
-      <div className='message-entry-box'>
-        <textarea
+      <div className='MessageEntryBox'>
+        <input
           name='message'
-          value={this.props.value}
-          onChange={this.handleChange.bind(this)}
-          onKeyPress={this.handleKeyPress.bind(this)}/>
+          value={this.state.message.value}
+          onChange={::this.changeMessage}
+          onKeyPress={::this.postMessage}/>
       </div>
     );
-  }
-
-  handleChange(ev) {
-    this.props.onChange(ev.target.value);
-  }
-
-  handleKeyPress(ev) {
-    if (ev.which === 13) {
-      this.props.onSubmit();
-      ev.preventDefault();
-    }
   }
 }
 

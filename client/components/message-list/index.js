@@ -3,15 +3,15 @@ import React, {Component} from 'react';
 class MessageList extends Component {
   render() {
     return (
-      <ol className='message-list'>
-        {this.props.messages.map(message => {
+      <ul className='MessageList'>
+        {this.props.messages.map((message, index) => {
           return (
-            <li key={`message-${message.id}`}>
+            <li key={`MessageList__${index}`}>
               {message.text}
             </li>
           );
         })}
-      </ol>
+      </ul>
     );
   }
 }

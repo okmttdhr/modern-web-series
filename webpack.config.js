@@ -5,18 +5,23 @@ const CLIENT_DIR = path.resolve(__dirname, 'client');
 const SERVER_DIR = path.resolve(__dirname, 'server/generated');
 const DIST_DIR = path.resolve(__dirname, 'dist');
 
-const loaders = [{
-  test: /\.js$/,
-  include: CLIENT_DIR,
-  loader: 'babel-loader',
-  query: {
-    presets: ['react', 'es2015']
+const loaders = [
+  {
+    test: /\.js$/,
+    include: CLIENT_DIR,
+    loader: 'babel',
+    query: {
+      presets: [
+        'react',
+        'es2015',
+        'stage-0',
+      ]
+    }
+  },
+  {
+    test: /\.less$/,
+    loader: ExtractTextPlugin.extract('style-loader', 'css-loader!less-loader')
   }
-},
-{
-  test: /\.less$/,
-  loader: ExtractTextPlugin.extract('style-loader', 'css-loader!less-loader')
-}
 ];
 
 const aliases = {
@@ -25,45 +30,47 @@ const aliases = {
   actions: path.resolve(CLIENT_DIR, 'actions')
 };
 
-module.exports = [{
-  name: 'client',
-  target: 'web',
-  context: CLIENT_DIR,
-  entry: './index.js',
-  output: {
-    path: DIST_DIR,
-    filename: 'bundle.js'
+module.exports = [
+  {
+    name: 'client',
+    target: 'web',
+    context: CLIENT_DIR,
+    entry: './index.js',
+    output: {
+      path: DIST_DIR,
+      filename: 'bundle.js'
+    },
+    module: {
+      loaders: loaders
+    },
+    resolve: {
+      alias: aliases
+    },
+    plugins: [
+      new ExtractTextPlugin('bundle.css', {allChunks: true})
+    ]
   },
-  module: {
-    loaders: loaders
-  },
-  resolve: {
-    alias: aliases
-  },
-  plugins: [
-    new ExtractTextPlugin('bundle.css', {allChunks: true})
-  ]
-},
-{
-  name: 'server',
-  target: 'node',
-  context: CLIENT_DIR,
-  entry: {
-    app: 'components/app/index.js'
-  },
-  output: {
-    path: SERVER_DIR,
-    filename: '[name].js',
-    libraryTarget: 'commonjs2'
-  },
-  externals: /^[a-z\-0-9]+$/,
-  module: {
-    loaders: loaders
-  },
-  resolve: {
-    alias: aliases
-  },
-  plugins: [
-    new ExtractTextPlugin('[name].css')
-  ]
-}];
+  {
+    name: 'server',
+    target: 'node',
+    context: CLIENT_DIR,
+    entry: {
+      app: 'components/app/index.js'
+    },
+    output: {
+      path: SERVER_DIR,
+      filename: '[name].js',
+      libraryTarget: 'commonjs2'
+    },
+    externals: /^[a-z\-0-9]+$/,
+    module: {
+      loaders: loaders
+    },
+    resolve: {
+      alias: aliases
+    },
+    plugins: [
+      new ExtractTextPlugin('[name].css')
+    ]
+  }
+];

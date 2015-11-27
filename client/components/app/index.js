@@ -1,24 +1,10 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {} from './style.less';
+import * as messageAction from 'actions/message-actions';
 import MessageList from 'components/message-list';
 import MessageEntryBox from 'components/message-entry-box';
-import * as messageActionCreators from 'actions/message-actions';
-
-class App extends Component {
-  render() {
-    return (
-      <div>
-        <MessageList messages={this.props.messages}/>
-        <MessageEntryBox
-          value={this.props.currentMessage}
-          onChange={this.props.updateMessage}
-          onSubmit={this.props.addMessage}/>
-      </div>
-    );
-  }
-}
+import './style.less';
 
 function mapStateToProps(state) {
   return {
@@ -28,7 +14,18 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators(messageActionCreators, dispatch);
+  return bindActionCreators(messageAction, dispatch);
+}
+
+class App extends React.Component {
+  render() {
+    return (
+      <div>
+        <MessageList messages={this.props.messages}/>
+        <MessageEntryBox onSubmit={this.props.addMessage}/>
+      </div>
+    );
+  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
